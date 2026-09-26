@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/git-state-compass/repo-snapshot.schema.json",
+  "title": "Git State Compass RepoSnapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "snapshot_id", "status", "started_at", "completed_at", "repository", "worktree", "refs", "sources", "invalidation"],
+  "properties": {
+    "schema_version": { "const": "1.1" },
+    "snapshot_id": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["valid", "invalid"] },
+    "started_at": { "type": "string", "minLength": 1 },
+    "completed_at": { "type": "string", "minLength": 1 },
+    "repository": {
+      "type": "object", "additionalProperties": false,
+      "required": ["display_name", "default_branch", "target_remote", "target_host", "target_repository", "remotes"],
+      "properties": {
+        "display_name": { "type": "string", "minLength": 1 },
+        "default_branch": { "type": ["string", "null"] },
+        "target_remote": { "type": ["string", "null"] },
+        "target_host": { "type": ["string", "null"] },
+        "target_repository": { "type": ["string", "null"] },
+        "remotes": { "type": "array", "items": { "type": "object" } }
+      }
+    },
+    "worktree": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path_display", "head_oid", "branch", "detached", "index", "working_tree", "operation"],
+      "properties": {
+        "path_display": { "type": ["string", "null"] },
+        "head_oid": { "type": ["string", "null"] },
+        "branch": { "type": ["string", "null"] },
+        "detached": { "type": "boolean" },
+        "index": { "type": "object", "additionalProperties": false, "required": ["staged", "conflicts"], "properties": { "staged": { "type": "boolean" }, "conflicts": { "type": "boolean" } } },
+        "working_tree": { "type": "object", "additionalProperties": false, "required": ["modified", "untracked"], "properties": { "modified": { "type": "boolean" }, "untracked": { "type": "boolean" } } },
+        "operation": { "type": ["string", "null"] }
+      }
+    },
+    "refs": {
+      "type": "object", "additionalProperties": false,
+      "required": ["current_ahead", "current_behind", "upstream", "local_branches", "remote_tracking", "open_pr"],
+      "properties": {
+        "current_ahead": { "type": "integer", "minimum": 0 },
+        "current_behind": { "type": "integer", "minimum": 0 },
+        "upstream": { "type": ["string", "null"] },
+        "local_branches": { "type": "array", "items": { "type": "object" } },
+        "remote_tracking": { "type": "array", "items": { "type": "object" } },
+        "open_pr": { "type": ["object", "null"], "additionalProperties": false, "required": ["number", "base", "head", "state", "draft", "mergeable", "checks", "review_state", "branch_protection"], "properties": { "number": { "type": "integer", "minimum": 1 }, "base": { "type": "string", "minLength": 1 }, "head": { "type": "string", "minLength": 1 }, "state": { "enum": ["open", "closed", "merged"] }, "draft": { "type": "boolean" }, "mergeable": { "enum": ["mergeable", "conflicting", "unknown"] }, "checks": { "enum": ["passing", "failing", "pending", "unknown"] }, "review_state": { "enum": ["approved", "changes_requested", "pending", "unknown"] }, "branch_protection": { "enum": ["satisfied", "unsatisfied", "unknown"] } } }
+      }
+    },
+    "sources": { "type": "object", "additionalProperties": false, "required": ["local", "github"], "properties": { "local": { "$ref": "#/$defs/source" }, "github": { "$ref": "#/$defs/source" } } },
+    "invalidation": { "type": "object", "additionalProperties": false, "required": ["valid", "reasons"], "properties": { "valid": { "type": "boolean" }, "reasons": { "type": "array", "items": { "type": "string" } } } }
+  },
+  "$defs": { "source": { "type": "object", "additionalProperties": false, "required": ["freshness", "observed_at", "query_method", "permission"], "properties": { "freshness": { "enum": ["fresh", "stale", "unknown", "unavailable"] }, "observed_at": { "type": ["string", "null"] }, "query_method": { "type": ["string", "null"] }, "permission": { "enum": ["available", "denied", "unknown", "not_applicable"] } } } }
+}

@@ -1,0 +1,25 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { recommend } from '../src/recommend.mjs';
+import { validateRepoSnapshot } from '../src/validate.mjs';
+import clean from '../fixtures/clean.json' with { type: 'json' };
+import dirty from '../fixtures/dirty.json' with { type: 'json' };
+import prReady from '../fixtures/pr-ready.json' with { type: 'json' };
+import remoteBehind from '../fixtures/remote-behind.json' with { type: 'json' };
+
+test('同一快照和目标产生稳定建议', () => assert.deepEqual(recommend(clean, 'inspect'), recommend(clean, 'inspect')));
+test('脏工作区阻止提 PR 和远端整合建议', () => { assert.equal(recommend(dirty, 'create_pr').rule_id, 'CREATE-PR-PROTECT-WORKTREE'); assert.equal(recommend(dirty, 'sync_remote').rule_id, 'SYNC-REMOTE-PROTECT-WORKTREE'); });
+test('可提 PR 时 Push 和创建 PR 分开授权', () => { const s = { ...prReady, refs: { ...prReady.refs, open_pr: null } }; const o = recommend(s, 'create_pr'); assert.equal(o.rule_id, 'CREATE-PR-PREPARE-PUBLISH'); assert.match(o.next_step, /单独确认 Push/); assert.match(o.next_step, /单独决定是否创建 PR/); });
+test('已有开放 PR 时不重复创建', () => assert.equal(recommend(prReady, 'create_pr').rule_id, 'CREATE-PR-EXISTS'));
+test('合并 PR 前不猜测合并方式', () => { const o = recommend(prReady, 'merge_pr'); assert.equal(o.rule_id, 'MERGE-PR-VERIFY-POLICY'); assert.match(o.next_step, /merge、squash 或 rebase/); });
+test('落后上游时先建议 Fetch', () => { const o = recommend(remoteBehind, 'sync_remote'); assert.equal(o.rule_id, 'SYNC-REMOTE-BEHIND'); assert.match(o.next_step, /Fetch/); });
+test('GitHub 不可用时仍依据本地远端跟踪事实建议 Fetch', () => { const s = { ...remoteBehind, sources: { ...remoteBehind.sources, github: { ...remoteBehind.sources.github, freshness: 'unavailable', permission: 'not_applicable' } } }; assert.equal(recommend(s, 'sync_remote').rule_id, 'SYNC-REMOTE-BEHIND'); });
+test('本地快照过期时不依据旧的 ahead/behind 给出 Fetch 建议', () => { const s = { ...remoteBehind, sources: { ...remoteBehind.sources, local: { ...remoteBehind.sources.local, freshness: 'stale' } } }; const o = recommend(s, 'sync_remote'); assert.equal(o.rule_id, 'SYNC-REMOTE-LOCAL-FACTS'); assert.equal(o.technical_state, 'NEEDS_CHECK'); });
+test('没有 upstream 时要求先明确同步目标', () => { const s = { ...clean, refs: { ...clean.refs, upstream: null } }; assert.equal(recommend(s, 'sync_remote').rule_id, 'SYNC-REMOTE-TARGET'); });
+test('多个 remote 但未选择 target remote 时不猜测', () => { const s = { ...clean, repository: { ...clean.repository, target_remote: null, remotes: [{ name: 'origin' }, { name: 'upstream' }] } }; assert.equal(recommend(s, 'sync_remote').rule_id, 'SYNC-REMOTE-TARGET'); });
+test('detached HEAD 只允许查看状态，不伪装成普通开发分支', () => { const s = { ...clean, worktree: { ...clean.worktree, branch: null, detached: true } }; const o = recommend(s, 'inspect'); assert.match(o.title, /detached HEAD/); assert.equal(recommend(s, 'create_pr').rule_id, 'CREATE-PR-NEEDS-BRANCH'); });
+test('GitHub 事实过期时不进入合并方式判断', () => { const s = { ...prReady, sources: { ...prReady.sources, github: { ...prReady.sources.github, freshness: 'stale' } } }; const o = recommend(s, 'merge_pr'); assert.equal(o.rule_id, 'MERGE-PR-REMOTE-FACTS'); assert.equal(o.technical_state, 'NEEDS_CHECK'); });
+test('本地与上游分叉时仍先 Fetch，不替用户猜测整合方式', () => { const s = { ...remoteBehind, refs: { ...remoteBehind.refs, current_ahead: 3, current_behind: 2 } }; const o = recommend(s, 'sync_remote'); assert.equal(o.rule_id, 'SYNC-REMOTE-BEHIND'); assert.match(o.next_step, /选择整合方式/); });
+test('失效快照不输出动作结论', () => { const s = { ...clean, invalidation: { valid: false, reasons: ['HEAD changed'] } }; assert.equal(recommend(s, 'merge_pr').rule_id, 'SNAPSHOT-INVALID'); });
+test('运行时校验拒绝错误版本和类型', () => { const s = { ...clean, schema_version: '1.0', refs: { ...clean.refs, current_ahead: '1' } }; const v = validateRepoSnapshot(s); assert.equal(v.ok, false); assert.ok(v.errors.length >= 2); });
+test('未知目标明确阻断', () => assert.equal(recommend(clean, 'push').rule_id, 'GOAL-UNKNOWN'));

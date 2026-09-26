@@ -1,0 +1,6 @@
+{
+  "name": "git-state-compass-core",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node --test", "inspect": "node ./bin/inspect.mjs", "web": "node ./web/dev-server.mjs" }
+}

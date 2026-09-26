@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Git State Compass</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23137f76'/%3E%3Cpath d='M16 7v18M7 16h18' stroke='white' stroke-width='3'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">+</span><span>Git State Compass</span></div>
+    <div class="snapshot-meta"><span class="pulse"></span><span>本地快照 · 刚刚更新</span></div>
+  </header>
+
+  <main class="shell">
+    <section class="masthead">
+      <div>
+        <p class="kicker">仓库状态罗盘 / 只读预览</p>
+        <h1>先看清自己在哪里，<br><em>再决定下一步。</em></h1>
+        <p class="lede">把本地分支、远端跟踪和 PR 状态放在同一张地图上。建议来自固定规则，不需要调用大模型。</p>
+      </div>
+    <form class="repo-form" id="repoForm"><label for="repoPath">本地仓库路径</label><input id="repoPath" placeholder="例如：C:\\Projects\\demo" spellcheck="false"><button type="submit">读取</button></form>
+    </section>
+
+    <section class="workspace-grid">
+      <div class="map-panel panel">
+        <div class="panel-head"><div><span class="section-index">01</span><h2>当前拓扑</h2></div><span class="quiet-label">本地 + remote-tracking</span></div>
+        <div class="branch-map" aria-label="分支关系图">
+          <div class="map-line line-main"></div><div class="map-line line-feature"></div><div class="map-line line-pr"></div>
+          <div class="node node-main"><span class="node-dot"></span><div><strong id="mainBranch">main</strong><small id="mainDetail">origin/main · 共同基线</small></div></div>
+          <div class="node node-feature active"><span class="node-dot"></span><div><strong id="currentBranch">feature/demo</strong><small id="currentDetail">当前分支 · HEAD 3333333</small></div><b>你在这里</b></div>
+          <div class="node node-pr"><span class="node-dot"></span><div><strong id="prLabel">PR #123</strong><small id="prDetail">Base main · Open</small></div></div>
+          <div class="map-legend"><span><i class="legend-current"></i>当前分支</span><span><i class="legend-remote"></i>远端跟踪</span><span><i class="legend-pr"></i>GitHub 协作层</span></div>
+        </div>
+        <div class="facts-strip"><div><small>工作区</small><strong id="worktreeState" class="safe">干净</strong></div><div><small>相对上游</small><strong id="aheadBehind">+2 / -0</strong></div><div><small>快照</small><strong id="snapshotState">有效</strong></div></div>
+      </div>
+
+      <aside class="advice-panel panel">
+        <div class="panel-head"><div><span class="section-index">02</span><h2>下一步建议</h2></div><span id="statePill" class="state-pill ready">READY</span></div>
+        <div class="goal-picker" role="tablist" aria-label="选择目标">
+          <button class="goal active" data-goal="inspect">看当前位置</button>
+          <button class="goal" data-goal="create_pr">提交 PR</button>
+          <button class="goal" data-goal="merge_pr">合并 PR</button>
+          <button class="goal" data-goal="sync_remote">更新远端</button>
+        </div>
+        <div class="advice-content"><p class="advice-label">首要动作</p><h3 id="adviceTitle">查看当前分支、HEAD、上游分支和工作区差异</h3><p id="adviceReason">你现在位于 feature/demo。工作区干净，可以先确认成果在哪一层，再选择提交或同步目标。</p></div>
+        <div class="advice-details"><div><span>会改变什么</span><strong id="adviceImpact">只查看，不改变本地仓库或远端。</strong></div><div><span>为什么这样建议</span><strong id="adviceFact">分支、HEAD、upstream 和工作区事实都已采集。</strong></div></div>
+        <div class="tip"><span class="tip-icon">i</span><span>这是一条教学建议，不会自动执行 Git。</span></div>
+      </aside>
+    </section>
+
+    <section class="bottom-grid">
+      <div class="panel compact-panel"><div class="panel-head"><div><span class="section-index">03</span><h2>事实来源</h2></div></div><div class="source-row"><span class="source-mark local"></span><div><strong>本地仓库</strong><small id="localSource">Git · 等待读取</small></div><b id="localFreshness">未读取</b></div><div class="source-row"><span class="source-mark github"></span><div><strong>GitHub</strong><small id="githubSource">只读协作事实</small></div><b id="githubFreshness">未连接</b></div></div>
+      <div class="panel compact-panel"><div class="panel-head"><div><span class="section-index">04</span><h2>你需要知道</h2></div></div><ul class="plain-list"><li><span>01</span>Push 和创建 PR 是两个动作。</li><li><span>02</span>Fetch 不会把代码合进当前分支。</li><li><span>03</span>合并方式需要遵守仓库规则。</li></ul></div>
+    </section>
+  </main>
+  <script src="./app.js"></script>
+</body>
+</html>

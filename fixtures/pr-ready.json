@@ -1,0 +1,8 @@
+{
+  "schema_version":"1.1","snapshot_id":"fixture-pr-ready-001","status":"valid","started_at":"2026-01-01T00:00:00Z","completed_at":"2026-01-01T00:00:01Z",
+  "repository":{"display_name":"OWNER/REPO","default_branch":"main","target_remote":"origin","target_host":"github.com","target_repository":"OWNER/REPO","remotes":[{"name":"origin","host":"github.com","repository":"OWNER/REPO"}]},
+  "worktree":{"path_display":"<PROJECT_ROOT>","head_oid":"3333333","branch":"feature/demo","detached":false,"index":{"staged":false,"conflicts":false},"working_tree":{"modified":false,"untracked":false},"operation":null},
+  "refs":{"current_ahead":2,"current_behind":0,"upstream":"origin/feature/demo","local_branches":[{"name":"feature/demo","oid":"3333333"}],"remote_tracking":[{"name":"origin/feature/demo","oid":"2222222"}],"open_pr":{"number":123,"base":"main","head":"feature/demo","state":"open","draft":false,"mergeable":"mergeable","checks":"passing","review_state":"approved","branch_protection":"satisfied"}},
+  "sources":{"local":{"freshness":"fresh","observed_at":"2026-01-01T00:00:01Z","query_method":"git","permission":"not_applicable"},"github":{"freshness":"fresh","observed_at":"2026-01-01T00:00:01Z","query_method":"gh","permission":"available"}},
+  "invalidation":{"valid":true,"reasons":[]}
+}

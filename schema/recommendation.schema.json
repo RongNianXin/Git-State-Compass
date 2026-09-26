@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/git-state-compass/recommendation.schema.json",
+  "title": "Git State Compass Recommendation",
+  "type": "object", "additionalProperties": false,
+  "required": ["recommendation_version", "snapshot_id", "rule_id", "intent", "technical_state", "authorization_state", "target", "title", "reason", "impact", "next_step", "facts", "risks", "confidence", "invalidated_by"],
+  "properties": {
+    "recommendation_version": { "const": "1.0" }, "snapshot_id": { "type": ["string", "null"] }, "rule_id": { "type": "string", "minLength": 1 }, "intent": { "type": "string", "minLength": 1 }, "technical_state": { "enum": ["READY", "NEEDS_CHECK", "BLOCKED", "UNAVAILABLE"] }, "authorization_state": { "enum": ["not_required", "requires_confirmation", "confirmed", "unknown"] },
+    "target": { "type": "object", "additionalProperties": false, "required": ["repository", "host", "remote", "branch", "pr_number"], "properties": { "repository": { "type": ["string", "null"] }, "host": { "type": ["string", "null"] }, "remote": { "type": ["string", "null"] }, "branch": { "type": ["string", "null"] }, "pr_number": { "type": ["integer", "null"] } } },
+    "title": { "type": "string", "minLength": 1 }, "reason": { "type": "string", "minLength": 1 }, "impact": { "type": "string", "minLength": 1 }, "next_step": { "type": "string", "minLength": 1 }, "facts": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["source", "observed_at", "code", "detail"], "properties": { "source": { "type": "string" }, "observed_at": { "type": ["string", "null"] }, "code": { "type": "string" }, "detail": { "type": "string" } } } }, "risks": { "type": "array", "items": { "type": "string" } }, "confidence": { "enum": ["high", "medium", "low"] }, "invalidated_by": { "type": "array", "items": { "type": "string" } }
+  }
+}
