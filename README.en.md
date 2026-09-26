@@ -2,6 +2,8 @@
 
 [中文](README.md)
 
+Chinese name: Git 状态罗盘
+
 Git State Compass is a local Git status compass for people who are new to GitHub. It explains the current branch, remote-tracking branches, working-tree changes, and common GitHub tasks, then gives one deterministic next-step recommendation without calling an LLM.
 
 ## What problem does it solve?
@@ -44,4 +46,4 @@ Think of it as a dashboard for your car. It shows which road you are on (branch)
 
 No formal license has been published yet. Licensing is part of a later release-preparation batch.
 
-<!-- README-SOURCE-SHA256: 344e5c0e7d480ae87a776960ec6aa5521faed1c6cff98a132768906d2419b6d4 -->
+<!-- README-SOURCE-SHA256: 9f209133666d4d09113cb72d4b5b4ec683604efd6f0583113f34168712da1a71 -->

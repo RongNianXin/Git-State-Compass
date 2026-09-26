@@ -2,6 +2,8 @@
 
 [English](README.en.md)
 
+中文别名：Git 状态罗盘
+
 Git State Compass 是一个面向 GitHub 新手的本地 Git 状态罗盘。它把当前分支、远端跟踪分支、工作区状态和常见 GitHub 操作放在一起解释，并给出一条不依赖大模型的下一步建议。
 
 ## 它解决什么问题？
