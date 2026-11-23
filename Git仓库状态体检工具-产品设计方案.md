@@ -810,8 +810,7 @@ Star 可以作为采用信号观察，不能作为是否完成、是否专业或
 - [Git Town: Stacked Changes](https://www.git-town.com/stacked-changes)
 - [GitButler: Stacked Branches](https://docs.gitbutler.com/features/branch-management/stacked-branches)
 - [git-branchless](https://github.com/arxanas/git-branchless)
-- [场景四：合作维护远端仓库](../总指挥工作流/第二代总指挥的工作模式/01-操作者操作手册.md#场景四合作维护远端仓库以-github-为例)
-- [PR 提交与审查标准](../总指挥工作流/第二代总指挥的工作模式/docs/PR_SUBMISSION_AND_REVIEW_STANDARD.md)
+- 场景四与 PR 提交审查规范来自外部项目 [ChatGPT Workflows](https://github.com/RongNianXin/ChatGPT-Workflows) 的第二代总指挥工作模式目录，不属于本仓库文件，也不是产品运行依赖。
 
 ## 17. 审查结论与当前停止点
 

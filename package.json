@@ -2,5 +2,17 @@
   "name": "git-state-compass-core",
   "private": true,
   "type": "module",
-  "scripts": { "test": "node --test", "inspect": "node ./bin/inspect.mjs", "web": "node ./web/dev-server.mjs" }
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test",
+    "inspect": "node ./bin/inspect.mjs",
+    "web": "node ./bin/web.mjs",
+    "build:portable": "node ./scripts/build-portable.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "postject": "^1.0.0-alpha.6"
+  }
 }
